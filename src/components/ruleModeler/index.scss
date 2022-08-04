@@ -1,0 +1,18 @@
+@import 'node_modules/diagram-js/assets/diagram-js';
+@import 'node_modules/diagram-js-minimap/assets/diagram-js-minimap';
+@import 'node_modules/dmn-js/dist/assets/dmn-js-decision-table';
+@import 'node_modules/dmn-js/dist/assets/dmn-js-decision-table-controls';
+@import 'node_modules/dmn-js/dist/assets/dmn-js-drd';
+@import 'node_modules/dmn-js/dist/assets/dmn-js-literal-expression';
+@import 'node_modules/dmn-js/dist/assets/dmn-js-shared';
+@import 'node_modules/dmn-js/dist/assets/dmn-font/css/dmn';
+
+.djs-minimap {
+    &:not(.open) .toggle:before {
+        content: url('../../assets//images/svg/map.svg');
+    }
+
+    &.open .toggle:before {
+        content: url('../../assets/images/svg/close.svg');
+    }
+}
