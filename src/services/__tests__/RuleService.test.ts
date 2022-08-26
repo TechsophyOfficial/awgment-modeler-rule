@@ -1,5 +1,6 @@
-import { GET_RULE_ENDPOINT, getRuleDetails } from '../RuleService';
+import { getRuleDetails } from '../RuleService';
 import { request } from '../../request';
+import { RULE_DEPLOY, RULE_ENDPOINT } from '../../constants/endpoints'
 
 jest.mock('../../request');
 
@@ -14,14 +15,14 @@ describe('getRuleDetails', () => {
             data: { data: ['mock'] },
         };
         mockedRequest.get.mockResolvedValue(response);
-        const result = await getRuleDetails('123');
+        const result = await getRuleDetails('123', 'ABC');
         expect(mockedRequest.get).toHaveBeenCalledTimes(1);
         expect(result).toEqual(response);
     });
 
     test('getRuleDetails() should call wilth proper Request URL', async () => {
-        await getRuleDetails('123');
-        expect(mockedRequest.get).toHaveBeenCalledWith(`${GET_RULE_ENDPOINT}/123`);
+        await getRuleDetails('123', 'ABC');
+        expect(mockedRequest.get).toHaveBeenCalledWith(`ABC${RULE_ENDPOINT}/123`);
     });
 
     test('fetches erroneously data from an API', async () => {
@@ -30,7 +31,7 @@ describe('getRuleDetails', () => {
             data: { message: 'Hello World', data: ['mock'] },
         };
         mockedRequest.get.mockResolvedValue(response);
-        const result = await getRuleDetails('123');
+        const result = await getRuleDetails('123', 'ABC');
         expect(mockedRequest.get).toHaveBeenCalledTimes(1);
         expect(result).toEqual({ success: false });
     });

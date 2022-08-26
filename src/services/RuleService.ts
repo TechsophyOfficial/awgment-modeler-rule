@@ -20,6 +20,7 @@ interface RuleTableProps {
 }
 interface RuleReqProps {
     paginate: boolean;
+    apiUrl: string;
     rowsPerPage?: number;
     page?: number;
     sortBy?: string;
@@ -27,11 +28,12 @@ interface RuleReqProps {
     searchTerm?: string;
 }
 
-export const GET_RULE_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_ENDPOINT}`;
-export const DEPLOY_RULE_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_DEPLOY}`;
+// export const GET_RULE_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_ENDPOINT}`;
+// export const DEPLOY_RULE_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_DEPLOY}`;
 
 export const getAllRules = async ({
     paginate = true,
+    apiUrl,
     rowsPerPage = 10,
     page = 1,
     sortBy = '',
@@ -40,7 +42,7 @@ export const getAllRules = async ({
 }: RuleReqProps): Promise<{ success: boolean; message?: string; data?: RuleTableProps | any }> => {
     const sort = sortBy && sortDirection ? `&sort-by=${sortBy}:${sortDirection}` : '';
     const search = searchTerm ? `&q=${searchTerm}` : '';
-    let URL = `${GET_RULE_ENDPOINT}?include-content=true`;
+    let URL = `${apiUrl}${RULE_ENDPOINT}?include-content=true`;
 
     if (!paginate) {
         URL += `${sort}${search}`;
@@ -62,8 +64,11 @@ export const getAllRules = async ({
 
 //To Get All Rules API call
 
-export const getRuleDetails = async (id: string): Promise<{ success: boolean; data?: RuleProps; message?: string }> => {
-    const r: ResponseProps = (await request.get(`${GET_RULE_ENDPOINT}/${id}`)) as ResponseProps;
+export const getRuleDetails = async (
+    id: string,
+    apiUrl: string,
+): Promise<{ success: boolean; data?: RuleProps; message?: string }> => {
+    const r: ResponseProps = (await request.get(`${apiUrl}${RULE_ENDPOINT}/${id}`)) as ResponseProps;
     if (r && r.success) {
         const rule = r.data as RuleProps;
         return { success: r.success, data: rule, message: r.message };
@@ -73,8 +78,9 @@ export const getRuleDetails = async (id: string): Promise<{ success: boolean; da
 
 export const saveRule = async (
     ruleDetails,
+    apiUrl,
 ): Promise<{ success: boolean; data?: SaveRuleResponse; message?: string }> => {
-    const r: ResponseProps = (await request.postForm(GET_RULE_ENDPOINT, ruleDetails)) as ResponseProps;
+    const r: ResponseProps = (await request.postForm(`${apiUrl}${RULE_ENDPOINT}`, ruleDetails)) as ResponseProps;
     if (r.success) {
         const rule = r.data as SaveRuleResponse;
         return { success: r.success, data: rule, message: r.message };
@@ -82,7 +88,10 @@ export const saveRule = async (
     return { success: false };
 };
 
-export const deployRule = async (ruleDetails: RuleDeployProps): Promise<{ success: boolean; message?: string }> => {
+export const deployRule = async (
+    ruleDetails: RuleDeployProps,
+    apiUrl: any,
+): Promise<{ success: boolean; message?: string }> => {
     const { id, name, deploymentName, content, version } = ruleDetails;
     const blob = new Blob([content]);
     const fileOfBlob = new File([blob], `${deploymentName}.dmn`);
@@ -94,15 +103,15 @@ export const deployRule = async (ruleDetails: RuleDeployProps): Promise<{ succes
         content: fileOfBlob,
     };
 
-    const r: ResponseProps = (await request.postForm(DEPLOY_RULE_ENDPOINT, params)) as ResponseProps;
+    const r: ResponseProps = (await request.postForm(`${apiUrl}${RULE_DEPLOY}`, params)) as ResponseProps;
     if (r.success) {
         return { success: r.success, message: r.message };
     }
     return { success: false };
 };
 
-export const deleteRule = async (id: string): Promise<{ success: boolean; message?: string }> => {
-    const r: ResponseProps = (await request.delete(`${GET_RULE_ENDPOINT}/${id}`)) as ResponseProps;
+export const deleteRule = async (id: string, apiUrl: string): Promise<{ success: boolean; message?: string }> => {
+    const r: ResponseProps = (await request.delete(`${apiUrl}${RULE_ENDPOINT}/${id}`)) as ResponseProps;
     if (r.success) {
         return { success: r.success, message: r.message };
     }
