@@ -17,13 +17,13 @@ const App = ({ config }): React.ReactElement => {
         <StyledEngineProvider injectFirst>
             <StylesProvider generateClassName={generateClassName}>
                 <ThemeProvider>
-                    <ContextProvider>
-                        <AppConfig.Provider value={config}>
+                    <AppConfig.Provider value={config}>
+                        <ContextProvider>
                             <Wrapper>
                                 <Layout />
                             </Wrapper>
-                        </AppConfig.Provider>
-                    </ContextProvider>
+                        </ContextProvider>
+                    </AppConfig.Provider>
                 </ThemeProvider>
             </StylesProvider>
         </StyledEngineProvider>
