@@ -15,7 +15,12 @@ The following are the features of Rule Modeler.
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Docker build and run
+docker build . -t awgment-modeler-rule
 
+docker run -it -p 8181:80 --env-file docker.env awgment-modeler-rule:latest
+
+curl localhost:8181/model/rules/config.json
 ## Prerequisites
 
 1. Make sure node is installed in your system.
