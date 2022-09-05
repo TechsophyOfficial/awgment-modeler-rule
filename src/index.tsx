@@ -8,7 +8,7 @@ import KeycloakWrapper from './KeycloakWrapper';
 declare const window: any;
 
 window.renderRuleMFE = (containerId: string) => {
-    fetch('../config.json')
+    fetch('../rules/config.json')
         .then(async (r) => r.json())
         .then((config) => {
             ReactDOM.render(<App config={config} />, document.getElementById(containerId));
@@ -21,7 +21,7 @@ window.unmountRuleMFE = (containerId: string) => {
 };
 
 if (!document.getElementById('RuleMFE-container')) {
-    fetch('../config.json')
+    fetch('../rules/config.json')
         .then(async (r) => r.json())
         .then((config) => {
             console.log(config);
