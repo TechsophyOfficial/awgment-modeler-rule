@@ -3,5 +3,5 @@
     "keyCloakUrl": "https://keycloak-tsplatform.techsophy.com/",
     "keyCloakRealm": "techsophy-platform",
     "keyCloakClientId": "tp-ui-core",
-    "publicUrl": "/model/rules/"
+    "publicRulesUrl": "/model/rules/"
 }
