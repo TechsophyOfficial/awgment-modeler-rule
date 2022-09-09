@@ -17,6 +17,9 @@ spec:
       containers:
       - image: tsdevopsteam/platform:rule-modeler-$BUILD_NUMBER
         name: rule-modeler
+        envFrom:
+        - configMapRef:
+            name: rulemodeler-env
         ports:
         - containerPort: 80
       imagePullSecrets:
