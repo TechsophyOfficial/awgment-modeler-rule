@@ -15,6 +15,7 @@ import getNewDMNDiagram from 'constants/newDMNDiagram';
 import { getRuleDetails, deleteRule, getAllRules } from 'services/RuleService';
 import { RuleProps } from 'components/ruleModeler';
 import RuleContext from 'contexts/ruleContext/rule-context';
+import AppConfig from 'appConfig';
 
 const actions = [
     {
@@ -43,6 +44,7 @@ const MaximizeView = () => {
     const { ruleTableData, updateRuleTableData } = useContext(RuleContext);
     const { ruleName, newDMNDiagram } = getNewDMNDiagram();
     const { rowsPerPage, sortBy, sortDirection, page } = ruleTableData;
+    const appData = useContext<any>(AppConfig);
 
     useEffect(() => {
         fetchAllRules(rowsPerPage, page);
@@ -65,12 +67,14 @@ const MaximizeView = () => {
 
     const fetchAllRules = async (noOfRows, pageNo, orderBy = sortBy, orderDirection = sortDirection) => {
         openSpinner();
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
         const {
             success,
             data,
             message = '',
         } = await getAllRules({
             paginate: true,
+            apiUrl: GATEWAY_URL,
             rowsPerPage: noOfRows,
             page: pageNo,
             sortBy: orderBy,
@@ -107,7 +111,8 @@ const MaximizeView = () => {
 
     const fetchRuleDetails = async (id: string): Promise<void> => {
         openSpinner();
-        const { success, message, data } = await getRuleDetails(id);
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, message, data } = await getRuleDetails(id, GATEWAY_URL);
         if (success && data) {
             const { name, version, content }: RuleProps = data;
             const decodedRuleContent = atob(content);
@@ -132,7 +137,8 @@ const MaximizeView = () => {
 
     const deleteRuleItem = async (id: string) => {
         openSpinner();
-        const { success, message } = await deleteRule(id);
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, message } = await deleteRule(id, GATEWAY_URL);
         if (success) {
             showConfirmation({
                 ...confirmation,
@@ -187,7 +193,8 @@ const MaximizeView = () => {
     };
 
     const handleSearch = async (searchTerm: string): Promise<void> => {
-        const { success, data } = await getAllRules({ paginate: false, searchTerm: searchTerm });
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, data } = await getAllRules({ paginate: false, apiUrl: GATEWAY_URL, searchTerm: searchTerm });
         if (success && data) {
             const updateData = { records: data };
             updateRuleTableData({

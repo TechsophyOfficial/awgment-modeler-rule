@@ -12,11 +12,13 @@ import NotificationContext from 'contexts/notificationContext/notification-conte
 import getNewDMNDiagram from 'constants/newDMNDiagram';
 import EmptyCardLayout from 'tsf_empty_card/dist/components/emptyCardLayout';
 import { RuleProps } from 'components/ruleModeler';
+import AppConfig from 'appConfig';
 
 const MinimizeView = () => {
     const {
         layout: { isHidden, isMinimized },
     } = useContext(LayoutContext);
+    const appData: any = useContext(AppConfig);
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -71,7 +73,12 @@ const MinimizeView = () => {
 
     const fetchAllRules = useCallback(async () => {
         openSpinner();
-        const { success, data, message = '' } = await getAllRules({ paginate: false, sortBy: 'updatedOn' });
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const {
+            success,
+            data,
+            message = '',
+        } = await getAllRules({ paginate: false, apiUrl: GATEWAY_URL, sortBy: 'updatedOn' });
         closeSpinner();
         if (success && data) {
             updateRuleTableData(data);
@@ -91,7 +98,8 @@ const MinimizeView = () => {
 
     const fetchRuleDetails = async (id: string): Promise<void> => {
         openSpinner();
-        const { success, message, data } = await getRuleDetails(id);
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, message, data } = await getRuleDetails(id, GATEWAY_URL);
         if (success && data) {
             const { name, version, content }: RuleProps = data;
             const decodedRuleContent = atob(content);
@@ -114,7 +122,13 @@ const MinimizeView = () => {
     };
 
     const handleSearch = async (searchTerm: string): Promise<void> => {
-        const { success, data } = await getAllRules({ paginate: false, sortBy: 'updatedOn', searchTerm: searchTerm });
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, data } = await getAllRules({
+            paginate: false,
+            apiUrl: GATEWAY_URL,
+            sortBy: 'updatedOn',
+            searchTerm: searchTerm,
+        });
         if (success && data) {
             updateRuleTableData(data);
         }
