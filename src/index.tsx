@@ -8,7 +8,7 @@ import KeycloakWrapper from './KeycloakWrapper';
 declare const window: any;
 
 window.renderRuleMFE = (containerId: string) => {
-    fetch('../rules/config.json')
+    fetch('../model/rules/config.json')
         .then(async (r) => r.json())
         .then((config) => {
             ReactDOM.render(<App config={config} />, document.getElementById(containerId));
