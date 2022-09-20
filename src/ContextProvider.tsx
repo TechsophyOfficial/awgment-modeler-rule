@@ -9,6 +9,7 @@ import RuleState from 'contexts/ruleContext/RuleState';
 import TabState from 'contexts/tabContext/TabState';
 import { ThemeProvider, Theme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/material';
+import AppConfig from '../src/appConfig';
 
 declare module '@mui/styles/defaultTheme' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -17,10 +18,12 @@ declare module '@mui/styles/defaultTheme' {
 
 const ContextProvider: React.FC = ({ children }) => {
     const { theme, updateTheme } = useContext(ThemeContext);
+    const appData = useContext<any>(AppConfig);
 
     useEffect(() => {
         const setTheme = async () => {
-            const selectedThemeRes = await getSelectedTheme();
+            const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+            const selectedThemeRes = await getSelectedTheme(GATEWAY_URL);
             if (selectedThemeRes.success) {
                 const selectedTheme = selectedThemeRes.data as ThemeProps;
                 updateTheme(selectedTheme);

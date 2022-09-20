@@ -16,6 +16,7 @@ import { deleteRule, deployRule, saveRule } from 'services/RuleService';
 import SpinnerContext from 'contexts/spinnerContext/spinner-context';
 import NotificationContext from 'contexts/notificationContext/notification-context';
 import ConfirmationContext from 'contexts/confirmationContext/confirmation-context';
+import AppConfig from '../../appConfig';
 
 interface Id {
     id: string;
@@ -80,6 +81,7 @@ const RuleModeler: React.FC<RuleModelerProps> = ({ tab, loadRecords }) => {
         version: '',
         deploymentName: '',
     });
+    const appData: any = useContext(AppConfig);
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -203,7 +205,8 @@ const RuleModeler: React.FC<RuleModelerProps> = ({ tab, loadRecords }) => {
         }
 
         openSpinner();
-        const { success, data, message } = await saveRule(ruleData);
+        const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+        const { success, data, message } = await saveRule(ruleData, GATEWAY_URL);
         if (success && data) {
             const { id: newId, version } = data;
             setOpenFormModal(false);
@@ -230,7 +233,17 @@ const RuleModeler: React.FC<RuleModelerProps> = ({ tab, loadRecords }) => {
             const { id, name, version } = tab;
             const { deploymentName } = formState;
             openSpinner();
-            const { success } = await deployRule({ id, name, version, deploymentName, content: currentXML });
+            const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+            const { success } = await deployRule(
+                {
+                    id,
+                    name,
+                    version,
+                    deploymentName,
+                    content: currentXML,
+                },
+                GATEWAY_URL,
+            );
             closeSpinner();
             setOpenFormModal(false);
             if (success) {
@@ -258,7 +271,8 @@ const RuleModeler: React.FC<RuleModelerProps> = ({ tab, loadRecords }) => {
     const onDeleteRule = async (): Promise<void> => {
         if (tab.id) {
             openSpinner();
-            const { success = false, message } = await deleteRule(tab.id);
+            const GATEWAY_URL = `${appData.apiGatewayUrl}`;
+            const { success = false, message } = await deleteRule(tab.id, GATEWAY_URL);
             if (success) {
                 showConfirmation({
                     ...confirmation,

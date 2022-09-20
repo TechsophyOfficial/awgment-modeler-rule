@@ -7,8 +7,12 @@ import KeycloakWrapper from './KeycloakWrapper';
 
 declare const window: any;
 
-window.renderRuleMFE = (containerId: string, history) => {
-    ReactDOM.render(<App history={history} />, document.getElementById(containerId));
+window.renderRuleMFE = (containerId: string) => {
+    fetch('../model/rules/config.json')
+        .then(async (r) => r.json())
+        .then((config) => {
+            ReactDOM.render(<App config={config} />, document.getElementById(containerId));
+        });
     serviceWorker.unregister();
 };
 
@@ -17,6 +21,11 @@ window.unmountRuleMFE = (containerId: string) => {
 };
 
 if (!document.getElementById('RuleMFE-container')) {
-    ReactDOM.render(<KeycloakWrapper />, document.getElementById('root'));
+    fetch('../rules/config.json')
+        .then(async (r) => r.json())
+        .then((config) => {
+            console.log(config);
+            ReactDOM.render(<KeycloakWrapper config={config} />, document.getElementById('root'));
+        });
     serviceWorker.unregister();
 }
