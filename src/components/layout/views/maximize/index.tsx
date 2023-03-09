@@ -192,9 +192,24 @@ const MaximizeView = () => {
         await fetchAllRules(rowsPerPage, 1, cellId, isAsc);
     };
 
-    const handleSearch = async (searchTerm: string): Promise<void> => {
+    const handleSearch = async (
+        searchTerm: string,
+        noOfRows = 5,
+        pageNo = 1,
+        orderBy = sortBy,
+        orderDirection = sortDirection,
+    ): Promise<void> => {
+        const isSearchTermEmpty = searchTerm === '' || searchTerm === undefined || searchTerm === null;
+        if (isSearchTermEmpty) {
+            fetchAllRules(noOfRows, pageNo, (orderBy = sortBy), (orderDirection = sortDirection));
+            return;
+        }
+
+        openSpinner();
         const GATEWAY_URL = `${appData.apiGatewayUrl}`;
         const { success, data } = await getAllRules({ paginate: false, apiUrl: GATEWAY_URL, searchTerm: searchTerm });
+
+        closeSpinner();
         if (success && data) {
             const updateData = { records: data };
             updateRuleTableData({
