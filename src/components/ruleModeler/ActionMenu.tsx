@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { FilePicker } from 'react-file-picker';
-import { IconButton, Menu, MenuItem, Button, Box } from '@mui/material';
+import { IconButton, Menu, MenuItem, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import PublishIcon from '@mui/icons-material/Publish';
-
-import Popup from 'tsf_popup/dist/components/popup';
-import { FileUploader } from 'react-drag-drop-files';
 
 interface ActionMenuProps {
     viewHandler: () => void;
@@ -18,9 +15,6 @@ interface ActionMenuProps {
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ viewHandler, importHandler, exportHandler }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const [viewRule, setViewRule] = useState(false);
-    const fileTypes = ['DMN'];
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -90,20 +84,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ viewHandler, importHandler, exp
                     </Button>
                 </MenuItem>
                 <MenuItem className={classes.menuItem} sx={{ display: 'block' }}>
-                    <Button
-                        className={classes.menuItemButton}
-                        onClick={() => {
-                            setAnchorEl(null), setViewRule(!viewRule);
-                        }}
-                        variant="text"
-                        size="small"
-                        startIcon={<PublishIcon />}>
-                        <Popup onShow={viewRule} onClose={() => setViewRule(false)}>
-                            <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                                <FileUploader handleChange={(file) => onImport(file)} name="file" types={fileTypes} />
-                            </Box>
-                        </Popup>
-                        <span>Import</span>
+                    <Button className={classes.menuItemButton} variant="text" size="small" startIcon={<PublishIcon />}>
+                        <FilePicker extensions={['dmn']} onChange={(file) => onImport(file)} onError={alert}>
+                            <span>Import</span>
+                        </FilePicker>
                     </Button>
                 </MenuItem>
                 <MenuItem onClick={onExport} className={classes.menuItem}>
